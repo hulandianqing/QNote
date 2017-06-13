@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="60">
+    <!-- 定义下面的引用名 -->
+    <Properties>
+        <property name="log_pattern">%d{yyyy-MM-dd HH:mm:ss} %msg%xEx%n</property>
+        <property name="file_path">logs</property>
+        <property name="every_file_size">50M</property><!-- 日志切割的最小单位 -->
+    </Properties>
+
+    <Appenders>
+        <!--这个输出控制台的配置-->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!-- 控制台只输出level及以上级别的信息(onMatch),其他的直接拒绝(onMismatch) -->
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            <!-- 输出日志的格式 -->
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+        </Console>
+        <!-- 错误日志文件 -->
+        <RollingFile name="error" fileName="${file_path}/error.log"
+                     filePattern="${file_path}/error.%d{yyyy-MM-dd}-%i">
+            <PatternLayout pattern="${log_pattern}"/><!-- 日志内容格式 -->
+            <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="${every_file_size}"/>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+            </Policies>
+        </RollingFile>
+        <!-- 错误日志文件 -->
+        <RollingFile name="debug" fileName="${file_path}/debug.log"
+                     filePattern="${file_path}/debug.%d{yyyy-MM-dd}-%i">
+            <PatternLayout pattern="${log_pattern}"/><!-- 日志内容格式 -->
+            <filters>
+                <ThresholdFilter level="info" onMatch="DENY" onMismatch="ACCEPT"/>
+                <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            </filters>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="${every_file_size}"/>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+            </Policies>
+        </RollingFile>
+
+        <Async name="asyncError">
+            <AppenderRef ref="error"/>
+            <AppenderRef ref="Console"/>
+        </Async>
+        <Async name="asyncDebug">
+            <AppenderRef ref="debug"/>
+            <AppenderRef ref="Console"/>
+        </Async>
+    </Appenders>
+    <Loggers>
+        <!-- info级别，用于信息记录（name不可变更） -->
+        <Logger name="INFO" level="info" additivity="false">
+        </Logger>
+        <Root level="error" additivity="false">
+            <AppenderRef ref="asyncError"/>
+            <AppenderRef ref="asyncDebug"/>
+        </Root>
+    </Loggers>
+</Configuration>

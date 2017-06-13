@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http:/www.thymeleaf.org"
+      xmlns:layout="http:/www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="cache-control" content="no-cache"/>
+    <meta http-equiv="expires" content="0"/>
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3"/>
+    <meta http-equiv="description" content=""/>
+
+    <script src="../../static/resources/plugin/jquery/jquery.min.js"
+            th:src="@{/resources/plugin/jquery/jquery.min.js}"></script>
+    <script src="../../static/resources/plugin/bootstrap.min.js"
+            th:src="@{/resources/plugin/bootstrap.min.js}"></script>
+    <link rel="stylesheet" href="../../static/resources/plugin/bootstrap.min.css"
+          th:href="@{/resources/plugin/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../static/resources/plugin/bootstrap-theme.min.css"
+          th:href="@{/resources/plugin/bootstrap-theme.min.css}"/>
+    <link rel="stylesheet" href="../../static/resources/css/global.css" th:href="@{/resources/css/global.css}"/>
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script src="../../static/resources/plugin/ie8-responsive-file-warning.js"
+            th:src="@{/resources/plugin/ie8-responsive-file-warning.js}"></script>
+    <![endif]-->
+    <script src="../../static/resources/plugin/ie-emulation-modes-warning.js"
+            th:src="@{/resources/plugin/ie-emulation-modes-warning.js}"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="../../static/resources/plugin/html5shiv.min.js"
+            th:src="@{/resources/plugin/html5shiv.min.js}"></script>
+    <script src="../../static/resources/plugin/respond.min.js" th:src="@{/resources/plugin/respond.min.js}"></script>
+    <![endif]-->
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../static/resources/plugin/ie10-viewport-bug-workaround.js"
+            th:src="@{/resources/plugin/ie10-viewport-bug-workaround.js}"></script>
+    <script src="../../static/resources/js/qnote.js"
+            th:src="@{/resources/js/qnote.js}"></script>
+    <style type="text/css">
+        .navbar-header {
+            float: left !important;
+        }
+        .navbar-right {
+            float: right!important;
+            margin-right: -15px !important;
+        }
+    </style>
+</head>
+<body>
+<nav layout:fragment="header" style="margin-bottom: 0px;" class="navbar navbar-default navbar-static-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#"><span aria-hidden="true" class="glyphicon glyphicon-user"></span></a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" id="savebtn" tabindex="0" data-content="请先编辑" role="button" data-toggle="popover" data-trigger="focus"><div ><span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></div></a></li>
+        </ul>
+    </div>
+</nav>
+<div layout:fragment="content"></div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="header/header">
+<head>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>速记</title>
+    <link href="resources/plugin/summer/summernote.css" rel="stylesheet">
+    <script src="resources/plugin/summer/summernote.js" th:src="@{/resources/plugin/summer/summernote.js}"></script>
+</head>
+<body>
+<div layout:fragment="content" class="container-fluid">
+    <div id="summernote"></div>
+    <div id="popover"></div>
+    <form id="noteForm" action="" th:action="@{saveNote}" method="post">
+        <input type="hidden" id="note_text" name="content"/>
+    </form>
+</div>
+</body>
+</html>
