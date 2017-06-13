@@ -1,5 +1,6 @@
 package org.hulan.util.common;
 
+import org.hulan.model.Operator;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -13,6 +14,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Collection;
+
+import static org.hulan.constant.SysConstant.SYS_OPERATOR;
 
 /**
  * 功能描述：Web工具
@@ -59,6 +62,14 @@ public class WebUtil {
 	 */
 	public static String getSessionId(boolean flag) {
 		return getSession(false).getId();
+	}
+	
+	public static Operator operator(){
+		HttpSession session = getSession(false);
+		if(session == null){
+			return null;
+		}
+		return (Operator) session.getAttribute(SYS_OPERATOR);
 	}
 	
 	/**

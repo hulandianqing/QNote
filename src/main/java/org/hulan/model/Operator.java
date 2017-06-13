@@ -30,6 +30,7 @@ public class Operator {
 	Integer status;
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id",precision = 16)
 	public Long getId() {
 		return id;

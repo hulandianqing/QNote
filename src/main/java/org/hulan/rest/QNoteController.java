@@ -1,5 +1,6 @@
 package org.hulan.rest;
 
+import com.alibaba.fastjson.JSONObject;
 import org.hulan.service.QNoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +29,10 @@ public class QNoteController {
 	
 	@RequestMapping("/saveNote")
 	public String saveNote(@RequestParam Map params){
-		System.out.println(params);
+		boolean flag = qNoteService.saveNote(new JSONObject(params));
+		if(flag){
+			return "redirect:index";
+		}
 		return "index";
 	}
 }

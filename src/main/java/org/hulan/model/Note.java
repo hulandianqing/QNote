@@ -17,7 +17,8 @@ public class Note {
 	int type;
 	
 	@Id
-	@Column(name = "id",precision = 16)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id",precision = 16,unique = true,nullable = false)
 	public Long getId() {
 		return id;
 	}

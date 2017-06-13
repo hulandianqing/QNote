@@ -19,7 +19,8 @@ public class NoteProperties {
 	Timestamp modifytime;
 	
 	@Id
-	@Column(name = "id",precision = 16)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id",precision = 16,unique = true,nullable = false)
 	public Long getId() {
 		return id;
 	}
@@ -57,7 +58,7 @@ public class NoteProperties {
 		this.status = status;
 	}
 	
-	@Column(name = "createtime",insertable = false,updatable = false,length = 30)
+	@Column(name = "createtime")
 	public Timestamp getCreatetime() {
 		return createtime;
 	}
@@ -66,7 +67,7 @@ public class NoteProperties {
 		this.createtime = createtime;
 	}
 	
-	@Column(name = "createtime",length = 30)
+	@Column(name = "modifytime")
 	public Timestamp getModifytime() {
 		return modifytime;
 	}

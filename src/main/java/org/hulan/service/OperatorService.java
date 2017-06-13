@@ -16,9 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static org.hulan.constant.State.*;
-import static org.hulan.constant.SysConstant.NOMAL;
-import static org.hulan.constant.SysConstant.PASSWORD;
-import static org.hulan.constant.SysConstant.USERNAME;
+import static org.hulan.constant.SysConstant.*;
 
 /**
  * 功能描述：
@@ -47,5 +45,7 @@ public class OperatorService {
 				new UsernamePasswordAuthenticationToken(json.getString(USERNAME)
 						,json.getString(PASSWORD)));
 		WebUtil.setAuthentication(au);
+		Operator operator = operatorRepository.findByUsername(json.getString(USERNAME));
+		WebUtil.getSession(true).setAttribute(SYS_OPERATOR,operator);
 	}
 }

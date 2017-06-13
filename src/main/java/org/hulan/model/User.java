@@ -1,9 +1,6 @@
 package org.hulan.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * 功能描述：
@@ -30,6 +27,7 @@ public class User {
 	String img;
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id",precision = 16)
 	public Long getId() {
 		return id;

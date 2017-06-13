@@ -104,10 +104,10 @@ public class SQLiteDialect extends Dialect {
 
 	// IDENTITY support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	private static final SQLiteDialectIdentityColumnSupport IDENTITY_COLUMN_SUPPORT = new SQLiteDialectIdentityColumnSupport(null);
+//	private static final SQLiteDialectIdentityColumnSupport IDENTITY_COLUMN_SUPPORT = ;
 	@Override
 	public IdentityColumnSupport getIdentityColumnSupport() {
-		return IDENTITY_COLUMN_SUPPORT;
+		return new SQLiteDialectIdentityColumnSupport(this);
 	}
 
 	// limit/offset support ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
