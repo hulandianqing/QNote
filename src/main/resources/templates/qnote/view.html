@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="header/header">
+<head>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title th:text="${properties.note.title}"></title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <!--<div th:text="${username}"></div>-->
+    <!--<div th:text="${path}"></div>-->
+    <!--<div th:text="${properties.note.content}"></div>-->
+    <div th:include="@{/views/{username}/{path}/{html}(username=${username},path=${path},html=${properties.note.content})}">
+    </div>
+</div>
+</body>
+</html>

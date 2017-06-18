@@ -1,5 +1,6 @@
 package org.hulan.util.common;
 
+import org.hulan.model.CurrentOperator;
 import org.hulan.model.Operator;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -31,57 +32,12 @@ public class WebUtil {
 		return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 	}
 	
-	/**
-	 * 功能描述：获取session
-	 * @author：zhaokuiqiang
-	 * @时间：2017-05-15
-	 */
-	public static HttpSession getSession() {
-		return getSession(false);
-	}
-	
-	/**
-	 * 功能描述：获取session
-	 * @author：zhaokuiqiang
-	 * @时间：2017-05-15
-	 */
-	public static HttpSession getSession(boolean flag) {
-		HttpServletRequest request = getRequest();
-		if(request == null) {
-			return null;
-		}
-		return request.getSession(flag);
-	}
-	
-	/**
-	 * 获取sessionid
-	 * @author：zhaokuiqiang
-	 * @时间：2017-05-15
-	 * @param flag
-	 * @return
-	 */
-	public static String getSessionId(boolean flag) {
-		return getSession(false).getId();
-	}
-	
 	public static Operator operator(){
-		HttpSession session = getSession(false);
-		if(session == null){
+		CurrentOperator operator = (CurrentOperator) getAuthentication().getPrincipal();
+		if(operator == null){
 			return null;
 		}
-		return (Operator) session.getAttribute(SYS_OPERATOR);
-	}
-	
-	/**
-	 * 注销session
-	 * @author：zhaokuiqiang
-	 * @时间：2017-05-15
-	 */
-	public static void invalidateSession() {
-		HttpSession session = getSession(false);
-		if(session != null) {
-			session.invalidate();
-		}
+		return operator.getOperator();
 	}
 	
 	public static void setAuthentication(Authentication authentication){
@@ -93,7 +49,11 @@ public class WebUtil {
 	}
 	
 	public static boolean isAuth(){
-		return !"anonymousUser".equals(WebUtil.getAuthentication().getName());
+		Authentication authentication = WebUtil.getAuthentication();
+		if(authentication == null){
+			return false;
+		}
+		return !"anonymousUser".equals(authentication.getName());
 	}
 	
 	public static String getUserName(){

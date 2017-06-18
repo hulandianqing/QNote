@@ -1,16 +1,14 @@
 package org.hulan.service;
 
 import com.google.common.io.Files;
-import org.hulan.model.Note;
-import org.hulan.util.common.WebUtil;
+import org.hulan.model.NoteProperties;
+import org.hulan.util.common.Generate;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
+import org.springframework.util.Assert;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.UUID;
 
 /**
  * 功能描述：
@@ -20,10 +18,10 @@ import java.util.UUID;
 @Service
 public class TemplateService {
 	
-	static String templatePath = null;
+	public static String templatePath = null;
 	static {
 		templatePath = TemplateService.class.getResource("/").getPath() + File.separator + "templates"
-		+ File.separator + "html" + File.separator;
+		+ File.separator + "views" + File.separator;
 		File file = new File(templatePath);
 		if(!file.exists()){
 			file.mkdirs();
@@ -32,20 +30,31 @@ public class TemplateService {
 	
 	/**
 	 * 写入文件
-	 * @param note
+	 * username/20170617/*.html
+	 * @param properties
 	 * @return
 	 * @throws IOException
 	 */
-	public File writeHTML(Note note) throws IOException {
-		String name = UUID.randomUUID().toString() + System.currentTimeMillis() + ".html";
-		File newFile = new File(getFilePath()+name);
-		Files.write(note.getContent().getBytes(),newFile);
-		return newFile;
+	public String writeHTML(NoteProperties properties) throws IOException {
+		Assert.notNull(properties,null);
+		Assert.notNull(properties.getNote(),null);
+		Assert.hasText(properties.getNote().getContent(),null);
+		String name = Generate.create() + System.currentTimeMillis() + ".html";
+		String filePath = properties.getOperator().getUsername() + getFilePath();
+		File newFile = new File(templatePath + filePath);
+		if(!newFile.exists()){
+			newFile.mkdirs();
+		}
+		newFile = new File(newFile.getPath()+File.separator+name);
+		StringBuilder fixHTML = new StringBuilder();
+		fixHTML.append("<div>").append(properties.getNote().getContent()).append("</div>");
+		Files.write(fixHTML.toString().getBytes(),newFile);
+		return name;
 	}
 	
 	/**
 	 * 返回文件目录
-	 * html/20170613/
+	 * 20170613/
 	 * @return
 	 */
 	public String getFilePath(){
@@ -57,13 +66,23 @@ public class TemplateService {
 		}else{
 			mondayStr = String.valueOf(monday);
 		}
-		String todayFilePath = templatePath + calendar.get(Calendar.YEAR)
-				+ mondayStr +calendar.get(Calendar.DATE)
+		String todayFilePath = calendar.get(Calendar.YEAR) + "-"
+				+ mondayStr + "-" +calendar.get(Calendar.DATE)
 				+ File.separator;
-		File newFile = new File(todayFilePath);
-		if(!newFile.exists()){
-			newFile.mkdirs();
-		}
 		return todayFilePath;
+	}
+	
+	/**
+	 * 检索html文件是否存在
+	 * @return
+	 */
+	public boolean existsFile(String username,NoteProperties properties){
+		Assert.hasText(username,null);
+		Assert.notNull(properties,null);
+		Assert.hasText(properties.getCreatetime(),null);
+		String time = properties.getCreatetime().split(" ")[0];
+		String path = templatePath + username + File.separator + time + File.separator + properties.getNote().getContent();
+		File htmlFile = new File(path);
+		return htmlFile.exists();
 	}
 }

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="header/header">
+<head>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>速记表</title>
+    <link rel="stylesheet" href="../../static/resources/css/list.css"
+          th:href="@{/resources/css/list.css}"/>
+    <style type="text/css">
+
+@media (min-width: 1200px) {
+    .list{
+        font-size: 14px;
+        width: 360px;
+        height:100px;
+        margin-bottom: 16px;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+    }
+    .text{
+        color: #0366d6;
+        display: block;
+        width: 320px;
+        word-break: break-all;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        overflow :hidden;
+    }
+    .list *{
+        padding: 16px;
+    }
+}
+.justify{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    list-style: none;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+}
+.border{
+    border: 1px #d1d5da solid;
+}
+.p-0{
+    padding:0px;
+}
+        .text-right{
+            text-align: right;
+        }
+        .repeat{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div layout:fragment="content" class="container">
+    <ol class="justify">
+        <li class="list border" th:each="properties : ${list}">
+            <a class="p-0 repeat" href="#" th:href="@{/qnote/{username}/{url}(url=${properties.id},username=${session.SPRING_SECURITY_CONTEXT.authentication.principal.username})}">
+                <div class="text" th:text="${properties.note.title}"></div>
+                <div class="text-right" th:text="${properties.modifytime}"></div>
+            </a>
+        </li>
+        <li class="list border" style="visibility: hidden;">
+            <a class="p-0" href="#" ><div class="text">222</div></a>
+            <div class="text-right">11</div>
+        </li>
+        <li class="list border" style="visibility: hidden;">
+            <a class="p-0" href="#" ><div class="text">222</div></a>
+            <div class="text-right">11</div>
+        </li>
+    </ol>
+</div>
+</body>
+</html>

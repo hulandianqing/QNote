@@ -2,16 +2,27 @@ $(document).ready(function () {
     var height = $(document).height() - 150;
     $('#summernote').summernote({
         focus:true,
-        minHeight:height,
+        minHeight:height
     });
     $("#savebtn").click(function () {
         var note = $('#summernote');
         if(note.summernote('isEmpty')){
-            $(this).popover('show');
+            Dialog.show("请先编辑");
             return false;
         }
-        $(this).popover('hide');
-        $("#note_text").val(note.summernote("code"));
+        var content = note.summernote("code");
+        var preview = $("#preview");
+        $("#note_text").val(content);
+        preview.html(content);
+        var previewText = preview.text();
+        if(previewText){
+            if(previewText.length > 20){
+                previewText = previewText.substring(0,20)+"...";
+            }
+        }else{
+            previewText = "";
+        }
+        $("[name=title]").val(previewText);
         $("#noteForm").submit();
     });
 });

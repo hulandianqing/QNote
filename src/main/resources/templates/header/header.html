@@ -21,7 +21,32 @@
     <link rel="stylesheet" href="../../static/resources/plugin/bootstrap-theme.min.css"
           th:href="@{/resources/plugin/bootstrap-theme.min.css}"/>
     <link rel="stylesheet" href="../../static/resources/css/global.css" th:href="@{/resources/css/global.css}"/>
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <style type="text/css">
+        .navbar-header {
+            float: left !important;
+        }
+        .navbar-right {
+            float: right!important;
+            margin-right: -15px !important;
+        }
+    </style>
+</head>
+<body>
+<nav layout:fragment="header" class="navbar navbar-default navbar-static">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="qnote/list" th:href="@{/qnote/list}" id="tolist" role="button"><div ><span class="glyphicon glyphicon-home" aria-hidden="true"></span></div></a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li th:if="${type}=='edit'"><a href="#" id="savebtn"><span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></a></li>
+            <li th:if="${type}=='list'"><a href="qnote/edit" th:href="@{edit}" id="toedit" role="button"><div ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></div></a></li>
+            <li th:if="${type}=='home'"></li>
+        </ul>
+    </div>
+</nav>
+<div layout:fragment="content"></div>
+</body>
+<!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]>
     <script src="../../static/resources/plugin/ie8-responsive-file-warning.js"
             th:src="@{/resources/plugin/ie8-responsive-file-warning.js}"></script>
@@ -38,29 +63,6 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="../../static/resources/plugin/ie10-viewport-bug-workaround.js"
             th:src="@{/resources/plugin/ie10-viewport-bug-workaround.js}"></script>
-    <script src="../../static/resources/js/qnote.js"
-            th:src="@{/resources/js/qnote.js}"></script>
-    <style type="text/css">
-        .navbar-header {
-            float: left !important;
-        }
-        .navbar-right {
-            float: right!important;
-            margin-right: -15px !important;
-        }
-    </style>
-</head>
-<body>
-<nav layout:fragment="header" style="margin-bottom: 0px;" class="navbar navbar-default navbar-static-top">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#"><span aria-hidden="true" class="glyphicon glyphicon-user"></span></a>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="#" id="savebtn" tabindex="0" data-content="请先编辑" role="button" data-toggle="popover" data-trigger="focus"><div ><span class="glyphicon glyphicon-floppy-open" aria-hidden="true"></span></div></a></li>
-        </ul>
-    </div>
-</nav>
-<div layout:fragment="content"></div>
-</body>
+    <script src="../../static/resources/js/common.js"
+            th:src="@{/resources/js/common.js}"></script>
 </html>

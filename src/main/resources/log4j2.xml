@@ -52,7 +52,7 @@
         <!-- info级别，用于信息记录（name不可变更） -->
         <Logger name="INFO" level="info" additivity="false">
         </Logger>
-        <Root level="error" additivity="false">
+        <Root level="ERROR" additivity="false">
             <AppenderRef ref="asyncError"/>
             <AppenderRef ref="asyncDebug"/>
         </Root>

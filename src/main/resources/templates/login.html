@@ -40,7 +40,7 @@
 <body>
 <div class="container">
 
-    <form id="auth" name="auth" class="form-signin form-horizontal"
+    <form id="auth" name="auth" class="form-signin form-horizontal" action="" th:action="@{/login}"
           method="post">
         <div class="form-group">
             <label for="username" class="col-sm-2 control-label">
@@ -71,7 +71,8 @@
                 </button>
             </div>
         </div>
-        <div class="alert alert-warning hidden" id="dialog" role="alert">
+        <div class="alert alert-warning" id="dialog" role="alert"
+            th:if="${message != null and message != ''}" th:text="${message}">
         </div>
     </form>
 

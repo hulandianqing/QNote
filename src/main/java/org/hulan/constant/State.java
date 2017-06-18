@@ -6,10 +6,29 @@ package org.hulan.constant;
  * @author ：zhaokuiqiang
  */
 public class State {
-	public static final int SUCCESS = 0;
+	public static final StateWrapper SUCCESS = new StateWrapper("0","成功");
 	
-	public static final int OPERATOR_NOT_FOUNT = 101;
-	public static final int OPERATOR_PASSWORD_ISNULL = 102;
-	public static final int OPERATOR_PASSWORD_ERROR = 103;
-	public static final int OPERATOR_STATUS_ERROR = 104;
+	public static final StateWrapper OPERATOR_NOT_FOUNT = new StateWrapper("101","用户不存在");;
+	public static final StateWrapper OPERATOR_PASSWORD_ISNULL = new StateWrapper("102","密码为空");;
+	public static final StateWrapper OPERATOR_PASSWORD_ERROR = new StateWrapper("103","密码错误");;
+	public static final StateWrapper OPERATOR_STATUS_ERROR = new StateWrapper("104","状态异常");;
+	public static final StateWrapper JUMP = new StateWrapper("9999","");;
+	
+	public static class StateWrapper{
+		String state = null;
+		String message = null;
+		public StateWrapper(String state,String message) {
+			this.state = state;
+			this.message = message;
+		}
+		
+		public String getState() {
+			return state;
+		}
+		
+		public String getMessage() {
+			return message;
+		}
+		
+	}
 }

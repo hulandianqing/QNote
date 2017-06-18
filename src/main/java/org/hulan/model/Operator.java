@@ -28,6 +28,19 @@ public class Operator {
 	int role;
 	Timestamp createtime;
 	Integer status;
+	public static final Operator EMPTY = new Operator(0L,"","",-1,0);
+	
+	public Operator() {
+	}
+	
+	public Operator(Long id, String username, String password, int role, Integer status) {
+		this.id = id;
+		this.user = user;
+		this.username = username;
+		this.password = password;
+		this.role = role;
+		this.status = status;
+	}
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

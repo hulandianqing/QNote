@@ -1,0 +1,48 @@
+@media (max-width: 567px) {
+    .text-down-link{
+        display: block;
+        width: 200px;
+        word-break: break-all;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        overflow :hidden;
+    }
+}
+@media (min-width: 568px) {
+    .text-down-link{
+        display: block;
+        width: 380px;
+        word-break: break-all;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        overflow :hidden;
+    }
+}
+@media (min-width: 768px) {
+    .text-down-link{
+        display: block;
+        width: 600px;
+        word-break: break-all;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        overflow :hidden;
+    }
+}
+@media (min-width: 1024px) {
+    .list{
+        width: 280px;
+        height:140px;
+    }
+    .text{
+        display: block;
+        width: 260px;
+        word-break: break-all;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        overflow :hidden;
+    }
+}

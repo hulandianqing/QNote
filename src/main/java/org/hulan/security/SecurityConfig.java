@@ -1,28 +1,39 @@
 package org.hulan.security;
 
+import org.hulan.constant.SysConstant;
+import org.hulan.model.CurrentOperator;
 import org.hulan.model.Operator;
 import org.hulan.repository.OperatorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,26 +44,28 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static org.hulan.constant.SysConstant.SYS_OPERATOR;
+
 /**
  * 功能描述：
  * 时间：2017/6/11 12:25
  * @author ：zhaokuiqiang
  */
 @SuppressWarnings("ALL")
-@Configuration
 @EnableWebSecurity
+@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
-	QNoteAuthenticationEntryPoint authenticationEntryPoint;
-	@Autowired
-	SecurityFilter securityFilter;
+	UserDetailsService userDetailsService;
+//	@Autowired
+//	SecurityFilter securityFilter;
 	@Autowired
 	UserDetailsService myUserDetailsService;
 	@Autowired
-	PasswordEncoder passwordEncoder;
-	@Autowired
 	OperatorRepository operatorRepository;
+	String remembermekey = "QNOTEKEY";
+	String remembermeUID = "QNOTEUID";
 	
 	@Override
 	protected UserDetailsService userDetailsService() {
@@ -61,53 +74,61 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
+				.csrf().disable()
 				.authorizeRequests()
 				.antMatchers("/favicon.ico","/resources/**","/login").permitAll()
-				.anyRequest().authenticated()
-				.and().formLogin().loginPage("/").permitAll().successHandler(new AuthenticationSuccessHandler() {
-			@Override
-			public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-				System.out.println("??????");
-			}
-		}).and()
-				.logout().permitAll().invalidateHttpSession(true);
+				.anyRequest().authenticated().and()
+				.formLogin()
+				.loginPage("/login")
+				.failureUrl("/login?error")
+				.and().logout()
+				.logoutUrl("/logout")
+				.deleteCookies(remembermeUID)
+				.permitAll()
+				.and()
+				.rememberMe()
+				.rememberMeCookieName(remembermeUID)
+				.key(remembermekey);
 	}
-	
 	
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder);
-		auth.eraseCredentials(true);
+	public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/","/favicon.ico","/resources/**","/login");
 	}
+	
+	@Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
+	
+	@Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+        return authenticationManagerBean();
+    }
 	
 	@Bean
 	public UserDetailsService myUserDetailsService() {
 		return username -> {
 			Operator operator = operatorRepository.findByUsername(username);
-			Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-			authorities.add(new SimpleGrantedAuthority("ROLE"+operator.getRole()));
-			User user = new User(operator.getUsername(), operator.getPassword(), authorities);
-			return user;
+			if(operator == null){
+				return null;
+			}
+			return new CurrentOperator(operator);
 		};
 	}
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		return new PasswordEncoder() {
-			@Override
-			public String encode(CharSequence rawPassword) {
-				if(rawPassword == null){
-					return null;
-				}
-				return String.valueOf(rawPassword);
-			}
-			
-			@Override
-			public boolean matches(CharSequence rawPassword, String encodedPassword) {
-				return true;
-			}
-		};
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	RememberMeServices rememberMeServices(){
+		TokenBasedRememberMeServices tokenBasedRememberMeServices = new TokenBasedRememberMeServices(remembermekey,userDetailsService);
+		tokenBasedRememberMeServices.setAlwaysRemember(true);
+		tokenBasedRememberMeServices.setCookieName(remembermeUID);
+		return tokenBasedRememberMeServices;
 	}
 	
 	@Bean
@@ -164,5 +185,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			}
 		};
 	}
-	
 }

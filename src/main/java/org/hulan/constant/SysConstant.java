@@ -6,12 +6,13 @@ package org.hulan.constant;
  * @author ：zhaokuiqiang
  */
 public class SysConstant {
-	public static final String NOMAL = "1";
-	public static final String ERROR = "0";
+	public static final int NOMAL = 1;
+	public static final int ERROR = 0;
 	
 	public static final String USERNAME = "username";
 	public static final String PASSWORD = "password";
 	
 	public static final String NOTE_CONTENT = "content";
+	public static final String NOTE_TITLE = "title";
 	public static final String SYS_OPERATOR = "operator";
 }

@@ -18,7 +18,6 @@ import java.io.IOException;
  * 时间：2017/5/27 11:38
  * @author ：zhaokuiqiang
  */
-@Component
 public class SecurityFilter extends AbstractSecurityInterceptor implements Filter {
 	
 	@Autowired

@@ -1,14 +1,16 @@
 package org.hulan.rest;
 
 import com.alibaba.fastjson.JSONObject;
+import org.hulan.model.NoteProperties;
 import org.hulan.service.QNoteService;
+import org.hulan.util.common.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,22 +19,45 @@ import java.util.Map;
  * @author ：zhaokuiqiang
  */
 @Controller
+@RequestMapping("/qnote")
 public class QNoteController {
 	
 	@Autowired
 	QNoteService qNoteService;
 	
-	@RequestMapping("/index")
-	public String index(){
-		return "index";
+	@RequestMapping("/edit")
+	public String index(Map model){
+		model.put("type","edit");
+		return "qnote/edit";
 	}
 	
 	@RequestMapping("/saveNote")
 	public String saveNote(@RequestParam Map params){
 		boolean flag = qNoteService.saveNote(new JSONObject(params));
 		if(flag){
-			return "redirect:index";
+			return "redirect:/qnote/list";
 		}
-		return "index";
+		return "qnote/edit";
+	}
+	
+	@RequestMapping("/list")
+	public ModelAndView list(){
+		Map model = new HashMap();
+		model.put("type","list");
+		model.put("list",qNoteService.queryUserNotes());
+		return new ModelAndView("qnote/list",model);
+	}
+	
+	@GetMapping("{username}/{pid}")
+	public ModelAndView viewQnote(@PathVariable("username") String username,@PathVariable("pid") String pid,Map modal){
+		NoteProperties properties = qNoteService.existsQnote(username,pid);
+		if(properties == null){
+			return new ModelAndView("redirect:/qnote/list");
+		}
+		modal.put("type","home");
+		modal.put("properties",properties);
+		modal.put("username",username);
+		modal.put("path",properties.getCreatetime().split(" ")[0]);
+		return new ModelAndView("qnote/view",modal);
 	}
 }

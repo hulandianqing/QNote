@@ -15,8 +15,8 @@ public class NoteProperties {
 	Operator operator;
 	Note note;
 	int status;
-	Timestamp createtime;
-	Timestamp modifytime;
+	String createtime;
+	String modifytime;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +39,7 @@ public class NoteProperties {
 		this.operator = operator;
 	}
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "nid")
 	public Note getNote() {
 		return note;
@@ -58,21 +58,21 @@ public class NoteProperties {
 		this.status = status;
 	}
 	
-	@Column(name = "createtime")
-	public Timestamp getCreatetime() {
+	@Column(name = "createtime",length = 20)
+	public String getCreatetime() {
 		return createtime;
 	}
 	
-	public void setCreatetime(Timestamp createtime) {
+	public void setCreatetime(String createtime) {
 		this.createtime = createtime;
 	}
 	
-	@Column(name = "modifytime")
-	public Timestamp getModifytime() {
+	@Column(name = "modifytime",length = 20)
+	public String getModifytime() {
 		return modifytime;
 	}
 	
-	public void setModifytime(Timestamp modifytime) {
+	public void setModifytime(String modifytime) {
 		this.modifytime = modifytime;
 	}
 }
