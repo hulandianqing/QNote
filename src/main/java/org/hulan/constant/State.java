@@ -1,12 +1,15 @@
 package org.hulan.constant;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * 功能描述：
  * 时间：2017/6/11 12:18
  * @author ：zhaokuiqiang
  */
 public class State {
-	public static final StateWrapper SUCCESS = new StateWrapper("0","成功");
+	public static final StateWrapper SUCCESS = new StateWrapper("success","成功");
+	public static final StateWrapper ERROR = new StateWrapper("error","失败");
 	
 	public static final StateWrapper OPERATOR_NOT_FOUNT = new StateWrapper("101","用户不存在");;
 	public static final StateWrapper OPERATOR_PASSWORD_ISNULL = new StateWrapper("102","密码为空");;
@@ -30,5 +33,9 @@ public class State {
 			return message;
 		}
 		
+		@Override
+		public String toString() {
+			return JSON.toJSONString(this);
+		}
 	}
 }

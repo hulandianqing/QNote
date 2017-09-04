@@ -13,12 +13,13 @@
 </head>
 <body>
 <div layout:fragment="content" class="container-fluid">
-    <div id="summernote"></div>
+    <div id="summernote" th:utext="${content}"></div>
     <div id="popover"></div>
     <div id="preview" class="hidden"></div>
     <form id="noteForm" action="" th:action="@{saveNote}" method="post">
-        <input type="hidden" id="note_text" name="content"/>
+        <input type="hidden" name="content"/>
         <input type="hidden" name="title"/>
+        <input type="hidden" name="pid" th:if="${properties != null}" th:value="${properties.id}"/>
     </form>
 </div>
 </body>

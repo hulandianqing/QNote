@@ -6,14 +6,17 @@
     <meta name="description" content=""/>
     <meta name="author" content=""/>
     <title th:text="${properties.note.title}"></title>
+    <script src="../../static/resources/js/view.js"
+        th:src="@{/resources/js/view.js}"></script>
 </head>
 <body>
 <div layout:fragment="content" class="container">
-    <!--<div th:text="${username}"></div>-->
-    <!--<div th:text="${path}"></div>-->
-    <!--<div th:text="${properties.note.content}"></div>-->
-    <div th:include="@{/views/{username}/{path}/{html}(username=${username},path=${path},html=${properties.note.content})}">
+    <div id="content_view" th:include="@{/views/{path}/{html}(path=${path},html=${properties.note.content})}">
     </div>
+    <form id="toeditForm" method="post" action="" th:action="@{/qnote/edit}">
+        <input type="hidden" name="pid" th:value="${properties.id}"/>
+        <input type="hidden" name="content"/>
+    </form>
 </div>
 </body>
 </html>

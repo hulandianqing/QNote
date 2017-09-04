@@ -1,6 +1,8 @@
 package org.hulan.service;
 
 import com.alibaba.fastjson.JSONObject;
+import org.codehaus.groovy.util.StringUtil;
+import org.hulan.constant.State;
 import org.hulan.constant.SysConstant;
 import org.hulan.model.Note;
 import org.hulan.model.NoteProperties;
@@ -11,6 +13,7 @@ import org.hulan.util.common.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.sqlite.date.DateFormatUtils;
 import org.thymeleaf.util.DateUtils;
@@ -20,8 +23,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 
-import static org.hulan.constant.SysConstant.NOTE_CONTENT;
-import static org.hulan.constant.SysConstant.NOTE_TITLE;
+import static org.hulan.constant.SysConstant.*;
 
 /**
  * 功能描述：
@@ -60,25 +62,40 @@ public class QNoteService {
 		if(!StringUtils.hasText(content)){
 			return false;
 		}
-		if(!StringUtils.hasText(title)){
+		if(title == null){
 			return false;
 		}
 		if(title.length() > 30){
 			return false;
 		}
-		Note note = new Note();
-		note.setTitle(title);
-		note.setType(1);
-		NoteProperties noteProperties = new NoteProperties();
+		String pid = json.getString(NOTE_PID);
+		NoteProperties noteProperties = null;
+		Note note = null;
 		String time = DateFormatUtils.format(System.currentTimeMillis(),"yyyy-MM-dd hh:mm:ss");
-		noteProperties.setCreatetime(time);
+		if(StringUtils.hasText(pid)){
+			noteProperties = qNotePropertyRepository.findOne(Long.valueOf(pid));
+			if(!noteProperties.getOperator().getUsername().equals(WebUtil.operator().getUsername())
+						|| SysConstant.NOMAL != noteProperties.getStatus()){
+				return false;
+			}
+		}
+		String filePath = null;
+		if(noteProperties == null){
+			noteProperties = new NoteProperties();
+			note = new Note();
+			note.setType(1);
+			noteProperties.setCreatetime(time.split(" ")[0]);
+			noteProperties.setNote(note);
+		}else{
+			note = noteProperties.getNote();
+			filePath = getNotePath(noteProperties);
+		}
+		note.setTitle(title);
 		noteProperties.setModifytime(time);
-		noteProperties.setNote(note);
 		noteProperties.setStatus(1);
 		noteProperties.setOperator(WebUtil.operator());
 		try {
-			note.setContent(content);
-			String file = templateService.writeHTML(noteProperties);
+			String file = templateService.writeHTML(noteProperties,content,filePath);
 			note.setContent(file);
 			qNoteRepository.save(note);
 			qNotePropertyRepository.save(noteProperties);
@@ -86,6 +103,24 @@ public class QNoteService {
 			throw new RuntimeException(e);
 		}
 		return true;
+	}
+	
+	/**
+	 * qnote权限认证
+	 * @param pid
+	 * @return
+	 */
+	public NoteProperties authQnote(String pid){
+		if(StringUtils.hasText(pid)){
+			NoteProperties noteProperties = qNotePropertyRepository.findOne(Long.parseLong(pid));
+			if(noteProperties != null){
+				if(noteProperties.getOperator().getUsername().equals(WebUtil.operator().getUsername())
+						&& SysConstant.NOMAL == noteProperties.getStatus()){
+					return noteProperties;
+				}
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -106,5 +141,42 @@ public class QNoteService {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * 删除note
+	 * @param pid
+	 * @return
+	 */
+	@Transactional
+	public State.StateWrapper deleteQnote(String pid){
+		if(StringUtils.hasText(pid)){
+			NoteProperties noteProperties = qNotePropertyRepository.findOne(Long.parseLong(pid));
+			if(noteProperties != null){
+				if(noteProperties.getOperator().getUsername().equals(WebUtil.operator().getUsername())
+						&& SysConstant.NOMAL == noteProperties.getStatus()){
+					noteProperties.setStatus(SysConstant.ERROR);
+					noteProperties.setModifytime(DateFormatUtils.format(System.currentTimeMillis(),"yyyy-MM-dd HH:mm:ss"));
+					qNotePropertyRepository.save(noteProperties);
+					return State.SUCCESS;
+				}
+			}
+		}
+		return State.ERROR;
+	}
+	/**
+	 * 获取指定note路径
+	 * @param properties
+	 * @return
+	 */
+	public String getNotePath(NoteProperties properties){
+		Operator operator;
+		Assert.notNull(properties,"");
+		try {
+			operator = properties.getOperator();
+		} catch(Exception e) {
+			operator = WebUtil.operator();
+		}
+		return operator.getUsername() + TemplateService.VIEW_SEPARATOR + properties.getCreatetime();
 	}
 }

@@ -8,75 +8,36 @@
     <title>速记表</title>
     <link rel="stylesheet" href="../../static/resources/css/list.css"
           th:href="@{/resources/css/list.css}"/>
-    <style type="text/css">
-
-@media (min-width: 1200px) {
-    .list{
-        font-size: 14px;
-        width: 360px;
-        height:100px;
-        margin-bottom: 16px;
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: flex;
-    }
-    .text{
-        color: #0366d6;
-        display: block;
-        width: 320px;
-        word-break: break-all;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        overflow :hidden;
-    }
-    .list *{
-        padding: 16px;
-    }
-}
-.justify{
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    list-style: none;
-    -webkit-flex-wrap: wrap;
-    flex-wrap: wrap;
-    -webkit-box-pack: justify;
-    -webkit-justify-content: space-between;
-    justify-content: space-between;
-}
-.border{
-    border: 1px #d1d5da solid;
-}
-.p-0{
-    padding:0px;
-}
-        .text-right{
-            text-align: right;
-        }
-        .repeat{
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+    <script src="../../static/resources/js/list.js"
+        th:src="@{/resources/js/list.js}"></script>
 </head>
 
 <body>
 <div layout:fragment="content" class="container">
     <ol class="justify">
         <li class="list border" th:each="properties : ${list}">
-            <a class="p-0 repeat" href="#" th:href="@{/qnote/{username}/{url}(url=${properties.id},username=${session.SPRING_SECURITY_CONTEXT.authentication.principal.username})}">
-                <div class="text" th:text="${properties.note.title}"></div>
-                <div class="text-right" th:text="${properties.modifytime}"></div>
+            <span class="repeat" th:data-target="${properties.id}">
+                <a href="#"
+                       th:href="@{/qnote/view/{username}/{url}(url=${properties.id},username=${session.SPRING_SECURITY_CONTEXT.authentication.principal.username})}">
+                    <div class="text" th:text="${properties.note.title}"></div>
+                </a>
+                <div class="text-right p-0">
+                    <span class="p-left-right-10" th:text="${properties.createtime}"></span>
+                    <a href="#" name="delete"><span class="p-left-right-10 glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                </div>
+            </span>
+        </li>
+        <li class="list border" style="visibility: hidden;">
+            <a class="p-0" href="#">
+                <div class="text"></div>
             </a>
+            <div class="text-right"></div>
         </li>
         <li class="list border" style="visibility: hidden;">
-            <a class="p-0" href="#" ><div class="text">222</div></a>
-            <div class="text-right">11</div>
-        </li>
-        <li class="list border" style="visibility: hidden;">
-            <a class="p-0" href="#" ><div class="text">222</div></a>
-            <div class="text-right">11</div>
+            <a class="p-0" href="#">
+                <div class="text"></div>
+            </a>
+            <div class="text-right"></div>
         </li>
     </ol>
 </div>

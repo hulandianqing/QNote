@@ -14,5 +14,10 @@ public class SysConstant {
 	
 	public static final String NOTE_CONTENT = "content";
 	public static final String NOTE_TITLE = "title";
+	public static final String NOTE_PID = "pid";
 	public static final String SYS_OPERATOR = "operator";
+	
+	/**视图所在的目录*/
+	public static final String VIEWS = "views";
+	
 }

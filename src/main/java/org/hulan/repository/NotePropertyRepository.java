@@ -12,6 +12,7 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface NotePropertyRepository extends CrudRepository<NoteProperties,Long>{
 	
-	@Query("select property from NoteProperties property where property.operator=? and status='1' order by createtime desc")
+	
+	@Query("select property from NoteProperties property where property.operator=? and property.status='1' order by createtime desc,id desc")
 	Iterable<NoteProperties> queryByOperator(Operator operator);
 }

@@ -8,7 +8,7 @@ var Dialog = {
                 "<div class='modal-body'>"
                 + "</div>"
                 + "<div class='modal-footer'>"
-                + "<button type='button' class='btn btn-primary' data-dismiss='modal'>Close</button>"
+                + "<button type='button' name='btn-primary' class='btn btn-primary'>Close</button>"
                 + "</div>"
                 + "  </div>"
                 + "</div>"
@@ -18,9 +18,23 @@ var Dialog = {
         }
         return modal;
     },
-    show: function (text) {
+    show: function (text,callback) {
         var modal = this.getModal();
         modal.find("[class=modal-body]").html(text);
+        var btn = modal.find("[name=btn-primary]");
+        if(btn.length > 0){
+            if(callback){
+                btn.click(function(){
+                    try {
+                        callback();
+                    } finally {
+                        modal.modal('hide');
+                    }
+                });
+            }else{
+                btn.click(function(){});
+            }
+        }
         modal.modal('show');
     }
 }
