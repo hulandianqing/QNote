@@ -15,7 +15,7 @@ import java.util.List;
 public class CurrentOperator implements UserDetails{
 	
 	Operator operator = null;
-	List<GrantedAuthority> grantedAuthorityList = null;
+	List<GrantedAuthority> grantedAuthorityList;
 	
 	public CurrentOperator(Operator operator) {
 		if(operator == null){
@@ -29,7 +29,7 @@ public class CurrentOperator implements UserDetails{
 		return operator;
 	}
 	
-	public void setOperator(Operator operator) {
+	private void setOperator(Operator operator) {
 		this.operator = operator;
 	}
 	

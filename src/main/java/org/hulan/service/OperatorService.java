@@ -6,24 +6,20 @@ import org.hulan.constant.State;
 import org.hulan.model.CurrentOperator;
 import org.hulan.model.Operator;
 import org.hulan.repository.OperatorRepository;
-import org.hulan.util.common.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 
-import static org.hulan.constant.State.*;
-import static org.hulan.constant.SysConstant.*;
+import static org.hulan.constant.State.StateWrapper;
+import static org.hulan.constant.SysConstant.PASSWORD;
+import static org.hulan.constant.SysConstant.USERNAME;
 
 /**
  * 功能描述：
@@ -62,8 +58,8 @@ public class OperatorService {
 		if(!StringUtils.hasText(json.getString(USERNAME)) || !StringUtils.hasText(PASSWORD)){
 			return State.JUMP;
 		}
-		UserDetails operator = userDetailsService.loadUserByUsername(json.getString(USERNAME));
-		if(operator == null){
+		CurrentOperator operator = (CurrentOperator) userDetailsService.loadUserByUsername(json.getString(USERNAME));
+		if(operator.getOperator() == Operator.EMPTY){
 			return State.OPERATOR_NOT_FOUNT;
 		}
 		if(passwordEncoder.matches(json.getString(PASSWORD),operator.getPassword())){
@@ -73,4 +69,5 @@ public class OperatorService {
 		}
 		return State.OPERATOR_PASSWORD_ERROR;
 	}
+	
 }

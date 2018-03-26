@@ -10,7 +10,7 @@
         <module name="QNote" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8">
+    <bytecodeTargetLevel target="1.6">
       <module name="QNote" target="1.8" />
     </bytecodeTargetLevel>
   </component>

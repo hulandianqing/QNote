@@ -1,7 +1,6 @@
 package org.hulan.service;
 
 import com.alibaba.fastjson.JSONObject;
-import org.codehaus.groovy.util.StringUtil;
 import org.hulan.constant.State;
 import org.hulan.constant.SysConstant;
 import org.hulan.model.Note;
@@ -9,18 +8,18 @@ import org.hulan.model.NoteProperties;
 import org.hulan.model.Operator;
 import org.hulan.repository.NotePropertyRepository;
 import org.hulan.repository.NoteRepository;
+import org.hulan.util.common.DateUtil;
+import org.hulan.util.common.Generate;
 import org.hulan.util.common.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.sqlite.date.DateFormatUtils;
-import org.thymeleaf.util.DateUtils;
 
-import java.io.File;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.List;
 
 import static org.hulan.constant.SysConstant.*;
@@ -39,6 +38,9 @@ public class QNoteService {
 	NotePropertyRepository qNotePropertyRepository;
 	@Autowired
 	TemplateService templateService;
+	@Autowired
+	TransactionTemplate transactionTemplate;
+	public static final String FIX = ".html";
 	
 	/**
 	 * 查询note列表
@@ -52,10 +54,10 @@ public class QNoteService {
 	
 	/**
 	 * 保存note
+	 * 如果传入pid修改note
 	 * @param json
 	 * @return
 	 */
-	@Transactional
 	public boolean saveNote(JSONObject json) {
 		String content = json.getString(NOTE_CONTENT);
 		String title = json.getString(NOTE_TITLE);
@@ -79,26 +81,41 @@ public class QNoteService {
 				return false;
 			}
 		}
-		String filePath = null;
+		String filePath;
+		Operator operator = WebUtil.operator();
 		if(noteProperties == null){
+			//新增
 			noteProperties = new NoteProperties();
 			note = new Note();
 			note.setType(1);
 			noteProperties.setCreatetime(time.split(" ")[0]);
 			noteProperties.setNote(note);
+			filePath = operator.getUsername() + templateService.getFilePath();
 		}else{
+			//修改
 			note = noteProperties.getNote();
 			filePath = getNotePath(noteProperties);
 		}
 		note.setTitle(title);
 		noteProperties.setModifytime(time);
 		noteProperties.setStatus(1);
-		noteProperties.setOperator(WebUtil.operator());
+		noteProperties.setOperator(operator);
+		String name;
+		if(StringUtils.hasText(noteProperties.getNote().getContent())){
+			name = noteProperties.getNote().getContent();
+		}else{
+			name = Generate.create() + DateUtil.formateNowTime() + FIX;
+		}
 		try {
-			String file = templateService.writeHTML(noteProperties,content,filePath);
-			note.setContent(file);
-			qNoteRepository.save(note);
-			qNotePropertyRepository.save(noteProperties);
+			String file = templateService.writeHTML(content,name,filePath);
+			Note finalNote = note;
+			NoteProperties finalNoteProperties = noteProperties;
+			transactionTemplate.execute(status -> {
+				finalNote.setContent(file);
+				qNoteRepository.save(finalNote);
+				qNotePropertyRepository.save(finalNoteProperties);
+				return true;
+			});
 		} catch(IOException e) {
 			throw new RuntimeException(e);
 		}

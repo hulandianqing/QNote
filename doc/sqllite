@@ -1,0 +1,43 @@
+
+
+-- sqllite-------------------------
+CREATE TABLE note
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content NVARCHAR(500),
+    type INT DEFAULT 1 NOT NULL,
+    title NVARCHAR(20)
+);
+CREATE TABLE note_properties
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    oid INTEGER NOT NULL,
+    nid INTEGER NOT NULL,
+    status INT,
+    createtime VARCHAR(20),
+    modifytime VARCHAR(20),
+    CONSTRAINT note_properties_operator_id_fk FOREIGN KEY (oid) REFERENCES operator (id),
+    CONSTRAINT note_properties_note_id_fk FOREIGN KEY (nid) REFERENCES note (id)
+);
+CREATE TABLE operator
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    username VARCHAR(50),
+    password VARCHAR(200),
+    role INT,
+    createtime DATETIME,
+    uid INTEGER,
+    name varchar(50),
+    status INT,
+    CONSTRAINT operator_user_id_fk FOREIGN KEY (uid) REFERENCES user (id)
+);
+CREATE UNIQUE INDEX operator_username_uindex ON operator (username);
+CREATE TABLE user
+(
+    id bigint PRIMARY KEY NOT NULL,
+    img varchar(50),
+    mail varchar(20),
+    name varchar(20),
+    sex integer,
+    tell varchar(20)
+);

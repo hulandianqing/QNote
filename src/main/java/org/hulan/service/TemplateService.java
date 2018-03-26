@@ -11,7 +11,6 @@ import org.springframework.util.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 import static org.hulan.constant.SysConstant.VIEWS;
 
@@ -24,7 +23,6 @@ import static org.hulan.constant.SysConstant.VIEWS;
 public class TemplateService {
 	
 	public static String templatePath = null;
-	public static final String FIX = ".html";
 	public static final String VIEW_SEPARATOR = "/";
 	@Autowired
 	QNoteService qNoteService;
@@ -41,29 +39,19 @@ public class TemplateService {
 	/**
 	 * 写入文件
 	 * username/20170617/*.html
-	 * @param properties
 	 * @return
 	 * @throws IOException
 	 */
-	public String writeHTML(NoteProperties properties,String content,String filePath) throws IOException {
-		Assert.notNull(properties,null);
-		Assert.notNull(properties.getNote(),null);
-		String name;
-		if(StringUtils.hasText(properties.getNote().getContent())){
-			name = properties.getNote().getContent();
-		}else{
-			name = Generate.create() + System.currentTimeMillis() + FIX;
-		}
-		if(filePath == null) {
-			filePath = properties.getOperator().getUsername() + getFilePath();
-		}
+	public String writeHTML(String content,String fileName,String filePath) throws IOException {
+		Assert.hasText(fileName,null);
+		Assert.hasText(filePath,"filepath不能为空");
 		File newFile = new File(templatePath + File.separator + filePath);
 		if(!newFile.exists()){
 			newFile.mkdirs();
 		}
-		newFile = new File(newFile.getPath()+File.separator+name);
+		newFile = new File(newFile.getPath()+File.separator+fileName);
 		Files.write(content.getBytes(),newFile);
-		return name;
+		return fileName;
 	}
 	
 	/**

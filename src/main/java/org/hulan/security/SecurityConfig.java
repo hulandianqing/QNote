@@ -112,7 +112,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return username -> {
 			Operator operator = operatorRepository.findByUsername(username);
 			if(operator == null){
-				return null;
+				operator = operator.EMPTY;
 			}
 			return new CurrentOperator(operator);
 		};
