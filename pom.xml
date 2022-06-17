@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <thymeleaf.version>3.0.6.RELEASE</thymeleaf.version>
         <thymeleaf-layout-dialect.version>2.2.2</thymeleaf-layout-dialect.version>
-        <fastjson.version>1.2.31</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <guava.version>22.0</guava.version>
         <mysql.version>6.0.6</mysql.version>
     </properties>
